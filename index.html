@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlantID Pro – Nhận diện cây tức thì / Instant Plant Identification</title>
+  <meta name="description" content="Nhận diện hơn 1,000 loài cây chỉ trong vài giây với công nghệ AI. Identify 1,000+ plant species in seconds with AI." />
+  <meta property="og:title" content="PlantID Pro" />
+  <meta property="og:description" content="Ứng dụng nhận diện cây thông minh nhất – Powered by PlantNet AI" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://plantidpro.app" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --mint: #34C98A;
+      --mint-dark: #28A870;
+      --mint-soft: rgba(52,201,138,.10);
+      --mint-soft2: rgba(52,201,138,.06);
+      --text-primary: #1A1A2E;
+      --text-secondary: #5A6473;
+      --text-tertiary: #9CA3AF;
+      --surface0: #F8FBF9;
+      --surface1: #FFFFFF;
+      --surface2: #EEF2EF;
+      --danger: #F05151;
+      --warning: #F59E0B;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--surface0);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(248,251,249,.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(52,201,138,.12);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 18px; color: var(--text-primary);
+      text-decoration: none;
+    }
+    .nav-logo .leaf { font-size: 24px; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      text-decoration: none; font-size: 14px; font-weight: 500;
+      color: var(--text-secondary); transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--mint); }
+    .nav-cta {
+      background: var(--mint); color: #fff !important;
+      padding: 8px 20px; border-radius: 100px;
+      transition: background .2s, transform .15s !important;
+    }
+    .nav-cta:hover { background: var(--mint-dark) !important; transform: translateY(-1px); }
+    .lang-toggle {
+      font-size: 12px; font-weight: 600; color: var(--text-tertiary);
+      cursor: pointer; user-select: none; transition: color .2s;
+    }
+    .lang-toggle:hover { color: var(--mint); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 1100px; margin: 0 auto;
+      padding: 96px 24px 80px;
+      display: flex; align-items: center; gap: 64px;
+    }
+    .hero-text { flex: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--mint-soft); color: var(--mint-dark);
+      font-size: 12px; font-weight: 600;
+      padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 20px; letter-spacing: .3px;
+    }
+    .hero-h1 {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 800; line-height: 1.12;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+    .hero-h1 .green { color: var(--mint); }
+    .hero-sub {
+      font-size: 18px; color: var(--text-secondary);
+      max-width: 480px; margin-bottom: 36px; line-height: 1.7;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--mint); color: #fff;
+      font-size: 15px; font-weight: 600;
+      padding: 14px 28px; border-radius: var(--radius-md);
+      text-decoration: none; transition: all .2s;
+      box-shadow: 0 4px 20px rgba(52,201,138,.35);
+    }
+    .btn-primary:hover { background: var(--mint-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(52,201,138,.4); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text-primary);
+      font-size: 15px; font-weight: 600;
+      padding: 14px 24px; border-radius: var(--radius-md);
+      text-decoration: none; border: 2px solid var(--surface2);
+      transition: all .2s;
+    }
+    .btn-secondary:hover { border-color: var(--mint); color: var(--mint); }
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 48px; padding-top: 32px;
+      border-top: 1px solid var(--surface2);
+    }
+    .hero-stat strong { display: block; font-size: 28px; font-weight: 800; color: var(--mint); }
+    .hero-stat span { font-size: 13px; color: var(--text-tertiary); font-weight: 500; }
+
+    /* ── PHONE MOCKUP ── */
+    .hero-visual { flex: 0 0 340px; }
+    .phone-wrap {
+      background: #1A1A2E;
+      border-radius: 48px;
+      padding: 14px;
+      box-shadow: 0 40px 80px rgba(0,0,0,.22), 0 0 0 1px rgba(255,255,255,.06);
+      position: relative;
+    }
+    .phone-screen {
+      background: var(--surface0);
+      border-radius: 38px;
+      overflow: hidden;
+      height: 600px;
+    }
+    .phone-notch {
+      width: 120px; height: 30px;
+      background: #1A1A2E;
+      border-radius: 0 0 20px 20px;
+      margin: 0 auto;
+      position: relative; z-index: 2;
+    }
+    .phone-content { padding: 0 16px 16px; }
+    .phone-header {
+      padding: 12px 0 16px;
+      border-bottom: 1px solid var(--surface2);
+    }
+    .phone-header h3 { font-size: 20px; font-weight: 800; }
+    .phone-header p { font-size: 11px; color: var(--text-tertiary); }
+    .phone-image-box {
+      margin-top: 14px;
+      background: linear-gradient(135deg, #2D5016 0%, #4A8023 50%, #34C98A 100%);
+      border-radius: 20px;
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .phone-image-box .leaf-emoji { font-size: 72px; opacity: .8; }
+    .phone-badge {
+      position: absolute; bottom: 10px; left: 10px;
+      background: rgba(52,201,138,.92);
+      color: #fff; font-size: 11px; font-weight: 600;
+      padding: 5px 12px; border-radius: 100px;
+    }
+    .phone-result-card {
+      margin-top: 12px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .phone-result-card .plant-name { font-size: 16px; font-weight: 700; }
+    .phone-result-card .plant-sci { font-size: 10px; color: var(--text-tertiary); font-style: italic; }
+    .phone-care-row {
+      display: flex; gap: 8px; margin-top: 10px;
+    }
+    .phone-care-chip {
+      flex: 1; background: var(--surface0); border-radius: 8px;
+      padding: 6px; text-align: center; font-size: 10px; color: var(--text-secondary);
+    }
+    .phone-care-chip .chip-emoji { font-size: 16px; display: block; }
+
+    /* ── FEATURES ── */
+    .section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+    .section-label {
+      text-align: center; margin-bottom: 56px;
+    }
+    .section-tag {
+      display: inline-block;
+      background: var(--mint-soft); color: var(--mint-dark);
+      font-size: 12px; font-weight: 700; letter-spacing: .5px;
+      text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 14px;
+    }
+    .section-h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+    }
+    .section-sub {
+      font-size: 17px; color: var(--text-secondary);
+      margin-top: 12px; max-width: 560px; margin-inline: auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--surface1);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      border: 1px solid rgba(52,201,138,.08);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.07); }
+    .feature-icon {
+      width: 52px; height: 52px;
+      background: var(--mint-soft); border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 18px;
+    }
+    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ── HOW IT WORKS ── */
+    .steps { display: flex; gap: 0; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute; top: 32px; left: calc(16.6% + 32px);
+      right: calc(16.6% + 32px); height: 2px;
+      background: linear-gradient(to right, var(--mint), var(--mint-soft));
+    }
+    .step { flex: 1; text-align: center; padding: 0 16px; }
+    .step-num {
+      width: 64px; height: 64px;
+      background: var(--mint); color: #fff;
+      border-radius: 50%; font-size: 22px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; position: relative; z-index: 1;
+      box-shadow: 0 0 0 8px var(--surface0), 0 0 0 10px rgba(52,201,138,.2);
+    }
+    .step h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── PLANTS DB ── */
+    .plants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .plant-chip {
+      background: var(--surface1);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+      transition: all .2s;
+      cursor: default;
+    }
+    .plant-chip:hover { border-color: var(--mint); transform: scale(1.02); }
+    .plant-chip .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+    .plant-chip .vi { font-size: 13px; font-weight: 600; }
+    .plant-chip .en { font-size: 10px; color: var(--text-tertiary); }
+
+    /* ── TECH STACK ── */
+    .tech-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .tech-card {
+      background: var(--surface1);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex; align-items: flex-start; gap: 14px;
+      border: 1px solid var(--surface2);
+    }
+    .tech-icon { font-size: 28px; flex-shrink: 0; }
+    .tech-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .tech-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background: linear-gradient(135deg, #1A3A28 0%, #0F2A1C 100%);
+      color: #fff;
+      text-align: center;
+      padding: 80px 24px;
+    }
+    .cta-strip h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+    .cta-strip p { font-size: 17px; color: rgba(255,255,255,.7); margin-bottom: 36px; }
+    .cta-strip .btn-primary { font-size: 16px; padding: 16px 36px; }
+    .cta-note { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,.4); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0F1A13;
+      color: rgba(255,255,255,.5);
+      padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-inner a { color: rgba(255,255,255,.5); text-decoration: none; font-size: 13px; transition: color .2s; }
+    .footer-inner a:hover { color: var(--mint); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-copy { font-size: 13px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { flex-direction: column; padding: 64px 20px 48px; gap: 48px; }
+      .hero-visual { width: 100%; max-width: 320px; margin: 0 auto; }
+      .phone-wrap { border-radius: 40px; }
+      .hero-stats { gap: 20px; }
+      .steps { flex-direction: column; }
+      .steps::before { display: none; }
+      .step { padding: 0; margin-bottom: 32px; display: flex; align-items: flex-start; text-align: left; gap: 16px; }
+      .step-num { margin: 0; flex-shrink: 0; width: 48px; height: 48px; font-size: 18px; }
+      nav .nav-links a:not(.nav-cta) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="leaf">🌿</span>
+      <span>PlantID Pro</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features" data-vi="Tính năng" data-en="Features">Tính năng</a>
+      <a href="#how" data-vi="Cách dùng" data-en="How it works">Cách dùng</a>
+      <a href="#plants" data-vi="Cơ sở dữ liệu" data-en="Database">Cơ sở dữ liệu</a>
+      <span class="lang-toggle" onclick="toggleLang()">EN</span>
+      <a href="#download" class="nav-cta" data-vi="Tải về" data-en="Download">Tải về</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-text">
+    <div class="hero-badge">
+      <span>✨</span>
+      <span data-vi="Powered by PlantNet AI + Apple Intelligence" data-en="Powered by PlantNet AI + Apple Intelligence">Powered by PlantNet AI + Apple Intelligence</span>
+    </div>
+    <h1 class="hero-h1">
+      <span data-vi="Nhận diện cây" data-en="Identify any">Nhận diện cây</span><br/>
+      <span class="green" data-vi="tức thì, chính xác" data-en="plant instantly">tức thì, chính xác</span>
+    </h1>
+    <p class="hero-sub" data-vi="Chụp ảnh một chiếc lá, bông hoa, hay vỏ cây — PlantID Pro cho bạn tên cây, hướng dẫn chăm sóc, cảnh báo độc tố và phân tích AI chi tiết trong vài giây." data-en="Snap a leaf, flower, or bark — PlantID Pro returns the plant name, care guide, toxicity warning, and detailed AI analysis in seconds.">
+      Chụp ảnh một chiếc lá, bông hoa, hay vỏ cây — PlantID Pro cho bạn tên cây, hướng dẫn chăm sóc, cảnh báo độc tố và phân tích AI chi tiết trong vài giây.
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">
+        <span>🍎</span>
+        <span data-vi="Tải trên App Store" data-en="Download on App Store">Tải trên App Store</span>
+      </a>
+      <a href="#features" class="btn-secondary">
+        <span data-vi="Xem tính năng" data-en="See features">Xem tính năng</span>
+        <span>→</span>
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong>1,000+</strong>
+        <span data-vi="Loài cây" data-en="Plant species">Loài cây</span>
+      </div>
+      <div class="hero-stat">
+        <strong>99%</strong>
+        <span data-vi="Độ chính xác" data-en="Accuracy">Độ chính xác</span>
+      </div>
+      <div class="hero-stat">
+        <strong>&lt; 3s</strong>
+        <span data-vi="Thời gian nhận diện" data-en="Identification time">Thời gian nhận diện</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="phone-wrap">
+      <div class="phone-screen">
+        <div class="phone-notch"></div>
+        <div class="phone-content">
+          <div class="phone-header">
+            <h3>PlantID Pro</h3>
+            <p data-vi="Nhận diện cây tức thì" data-en="Instant plant identification">Nhận diện cây tức thì</p>
+          </div>
+          <div class="phone-image-box">
+            <span class="leaf-emoji">🌳</span>
+            <div class="phone-badge">✓ 97% PlantNet</div>
+          </div>
+          <div class="phone-result-card">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:20px">🌳</span>
+              <div>
+                <div class="plant-name" data-vi="Cây Bàng" data-en="Indian Almond">Cây Bàng</div>
+                <div class="plant-sci">Terminalia catappa</div>
+              </div>
+            </div>
+            <div class="phone-care-row">
+              <div class="phone-care-chip">
+                <span class="chip-emoji">💧</span>
+                <span data-vi="Vừa" data-en="Moderate">Vừa</span>
+              </div>
+              <div class="phone-care-chip">
+                <span class="chip-emoji">☀️</span>
+                <span data-vi="Nhiều nắng" data-en="Full sun">Full sun</span>
+              </div>
+              <div class="phone-care-chip">
+                <span class="chip-emoji">⭐</span>
+                <span data-vi="Dễ" data-en="Easy">Dễ</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:#fff;border-radius:12px;padding:10px;border:1.5px solid rgba(52,201,138,.25)">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+              <span style="font-size:12px">✨</span>
+              <span style="font-size:12px;font-weight:700" data-vi="Phân tích AI" data-en="AI Analysis">Phân tích AI</span>
+              <span style="margin-left:auto;font-size:9px;background:rgba(52,201,138,.12);color:#28A870;padding:2px 8px;border-radius:100px;font-weight:600">Apple Intelligence</span>
+            </div>
+            <div style="font-size:11px;color:#5A6473;line-height:1.6" data-vi="Cây bàng ưa nắng, cần tưới 2-3 lần/tuần vào mùa khô. Lá già chuyển đỏ trước khi rụng — đây là hiện tượng tự nhiên." data-en="Indian almond thrives in full sun and needs watering 2-3x/week in dry season. Older leaves turn red before falling — this is natural.">
+              Cây bàng ưa nắng, cần tưới 2-3 lần/tuần vào mùa khô. Lá già chuyển đỏ trước khi rụng — đây là hiện tượng tự nhiên.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-label">
+    <div class="section-tag" data-vi="TÍNH NĂNG" data-en="FEATURES">TÍNH NĂNG</div>
+    <h2 class="section-h2" data-vi="Mọi thứ bạn cần về cây trồng" data-en="Everything you need about plants">Mọi thứ bạn cần về cây trồng</h2>
+    <p class="section-sub" data-vi="Từ nhận diện đến chăm sóc, PlantID Pro là người bạn đồng hành xanh của bạn." data-en="From identification to care guidance, PlantID Pro is your green companion.">Từ nhận diện đến chăm sóc, PlantID Pro là người bạn đồng hành xanh của bạn.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3 data-vi="PlantNet AI – 1,000+ loài" data-en="PlantNet AI – 1,000+ species">PlantNet AI – 1,000+ loài</h3>
+      <p data-vi="Sử dụng API PlantNet của CIRAD/Inria, chuyên về thực vật nhiệt đới và cây Việt Nam như bàng, phượng vĩ, sen, tre, xoài..." data-en="Powered by PlantNet API from CIRAD/Inria, specialized in tropical and Vietnamese plants like Indian almond, flame tree, lotus, bamboo, mango...">Sử dụng API PlantNet của CIRAD/Inria, chuyên về thực vật nhiệt đới và cây Việt Nam như bàng, phượng vĩ, sen, tre, xoài...</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✨</div>
+      <h3 data-vi="Apple Intelligence On-Device" data-en="Apple Intelligence On-Device">Apple Intelligence On-Device</h3>
+      <p data-vi="Phân tích AI ngay trên thiết bị với Foundation Models (iOS 26+). Lời khuyên chăm sóc, sức khỏe cây, mẹo theo mùa — mọi thứ riêng tư 100%." data-en="On-device AI analysis with Foundation Models (iOS 26+). Care tips, plant health, seasonal advice — 100% private.">Phân tích AI ngay trên thiết bị với Foundation Models (iOS 26+). Lời khuyên chăm sóc, sức khỏe cây, mẹo theo mùa — mọi thứ riêng tư 100%.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🪴</div>
+      <h3 data-vi="Vườn cây của bạn" data-en="My Garden">Vườn cây của bạn</h3>
+      <p data-vi="Lưu cây đã nhận diện vào vườn, đặt lịch tưới nước, theo dõi sức khỏe từng cây. Dữ liệu lưu cục bộ, không cần tài khoản." data-en="Save identified plants to your garden, set watering reminders, track each plant's health. Data stored locally, no account needed.">Lưu cây đã nhận diện vào vườn, đặt lịch tưới nước, theo dõi sức khỏe từng cây. Dữ liệu lưu cục bộ, không cần tài khoản.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚠️</div>
+      <h3 data-vi="Cảnh báo độc tố" data-en="Toxicity Warning">Cảnh báo độc tố</h3>
+      <p data-vi="Tự động cảnh báo nếu cây độc với người, chó, mèo, hoặc trẻ em. Thông tin y tế đáng tin cậy." data-en="Automatically warns if the plant is toxic to humans, dogs, cats, or children. Reliable medical information.">Tự động cảnh báo nếu cây độc với người, chó, mèo, hoặc trẻ em. Thông tin y tế đáng tin cậy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔬</div>
+      <h3 data-vi="Bệnh & Cách xử lý" data-en="Diseases & Treatment">Bệnh & Cách xử lý</h3>
+      <p data-vi="Cơ sở dữ liệu bệnh cây phổ biến với triệu chứng chi tiết và hướng dẫn xử lý hiệu quả." data-en="Database of common plant diseases with detailed symptoms and effective treatment guidance.">Cơ sở dữ liệu bệnh cây phổ biến với triệu chứng chi tiết và hướng dẫn xử lý hiệu quả.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📴</div>
+      <h3 data-vi="Hoạt động offline" data-en="Works Offline">Hoạt động offline</h3>
+      <p data-vi="Fallback nhận diện bằng Apple Vision ngay trên máy khi không có internet. Kết quả tức thì, không cần mạng." data-en="Falls back to Apple Vision for on-device identification when offline. Instant results, no network needed.">Fallback nhận diện bằng Apple Vision ngay trên máy khi không có internet. Kết quả tức thì, không cần mạng.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="background: var(--surface1); padding: 80px 0;" id="how">
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <div class="section-label">
+      <div class="section-tag" data-vi="CÁCH DÙNG" data-en="HOW IT WORKS">CÁCH DÙNG</div>
+      <h2 class="section-h2" data-vi="3 bước đơn giản" data-en="3 simple steps">3 bước đơn giản</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3 data-vi="📸 Chụp ảnh" data-en="📸 Take a photo">📸 Chụp ảnh</h3>
+          <p data-vi="Dùng camera hoặc chọn từ thư viện. Ảnh rõ nét, ánh sáng tốt cho kết quả tốt nhất." data-en="Use camera or pick from library. Clear photo in good light gives the best results.">Dùng camera hoặc chọn từ thư viện. Ảnh rõ nét, ánh sáng tốt cho kết quả tốt nhất.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3 data-vi="🤖 AI nhận diện" data-en="🤖 AI identifies">🤖 AI nhận diện</h3>
+          <p data-vi="PlantNet API phân tích và trả kết quả trong vài giây. Fallback Vision nếu offline." data-en="PlantNet API analyzes and returns results in seconds. Vision fallback if offline.">PlantNet API phân tích và trả kết quả trong vài giây. Fallback Vision nếu offline.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3 data-vi="🌿 Khám phá" data-en="🌿 Explore">🌿 Khám phá</h3>
+          <p data-vi="Đọc thông tin chi tiết, lời khuyên AI, và lưu vào vườn của bạn." data-en="Read detailed info, AI insights, and save to your garden.">Đọc thông tin chi tiết, lời khuyên AI, và lưu vào vườn của bạn.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANTS DATABASE -->
+<section class="section" id="plants">
+  <div class="section-label">
+    <div class="section-tag" data-vi="CÂY VIỆT NAM" data-en="PLANT DATABASE">CÂY VIỆT NAM</div>
+    <h2 class="section-h2" data-vi="Cơ sở dữ liệu thực vật" data-en="Plant Knowledge Base">Cơ sở dữ liệu thực vật</h2>
+    <p class="section-sub" data-vi="Chuyên sâu về cây Việt Nam và nhiệt đới với dữ liệu song ngữ Việt–Anh." data-en="Specialized in Vietnamese and tropical plants with bilingual Vietnamese–English data.">Chuyên sâu về cây Việt Nam và nhiệt đới với dữ liệu song ngữ Việt–Anh.</p>
+  </div>
+  <div class="plants-grid">
+    <div class="plant-chip"><span class="emoji">🌳</span><div class="vi" data-vi="Cây Bàng" data-en="Indian Almond">Cây Bàng</div><div class="en">Terminalia catappa</div></div>
+    <div class="plant-chip"><span class="emoji">🔴</span><div class="vi" data-vi="Phượng Vĩ" data-en="Flame Tree">Phượng Vĩ</div><div class="en">Delonix regia</div></div>
+    <div class="plant-chip"><span class="emoji">🌺</span><div class="vi" data-vi="Dâm Bụt" data-en="Hibiscus">Dâm Bụt</div><div class="en">Hibiscus rosa-sinensis</div></div>
+    <div class="plant-chip"><span class="emoji">🪷</span><div class="vi" data-vi="Hoa Sen" data-en="Lotus">Hoa Sen</div><div class="en">Nelumbo nucifera</div></div>
+    <div class="plant-chip"><span class="emoji">🎋</span><div class="vi" data-vi="Tre" data-en="Bamboo">Tre</div><div class="en">Bambusa vulgaris</div></div>
+    <div class="plant-chip"><span class="emoji">🥭</span><div class="vi" data-vi="Xoài" data-en="Mango">Xoài</div><div class="en">Mangifera indica</div></div>
+    <div class="plant-chip"><span class="emoji">🍌</span><div class="vi" data-vi="Chuối" data-en="Banana">Chuối</div><div class="en">Musa paradisiaca</div></div>
+    <div class="plant-chip"><span class="emoji">🌴</span><div class="vi" data-vi="Dừa" data-en="Coconut">Dừa</div><div class="en">Cocos nucifera</div></div>
+    <div class="plant-chip"><span class="emoji">🍊</span><div class="vi" data-vi="Bưởi" data-en="Pomelo">Bưởi</div><div class="en">Citrus maxima</div></div>
+    <div class="plant-chip"><span class="emoji">🍋</span><div class="vi" data-vi="Chanh" data-en="Lemon">Chanh</div><div class="en">Citrus limon</div></div>
+    <div class="plant-chip"><span class="emoji">🍍</span><div class="vi" data-vi="Nhãn" data-en="Longan">Nhãn</div><div class="en">Dimocarpus longan</div></div>
+    <div class="plant-chip"><span class="emoji">🫐</span><div class="vi" data-vi="Ổi" data-en="Guava">Ổi</div><div class="en">Psidium guajava</div></div>
+    <div class="plant-chip"><span class="emoji">🌸</span><div class="vi" data-vi="Hoa Giấy" data-en="Bougainvillea">Hoa Giấy</div><div class="en">Bougainvillea</div></div>
+    <div class="plant-chip"><span class="emoji">🌷</span><div class="vi" data-vi="Hoa Hồng" data-en="Rose">Hoa Hồng</div><div class="en">Rosa</div></div>
+    <div class="plant-chip"><span class="emoji">🌻</span><div class="vi" data-vi="Hướng Dương" data-en="Sunflower">Hướng Dương</div><div class="en">Helianthus annuus</div></div>
+    <div class="plant-chip"><span class="emoji">🌹</span><div class="vi" data-vi="Sứ Đại" data-en="Plumeria">Sứ Đại</div><div class="en">Plumeria rubra</div></div>
+    <div class="plant-chip"><span class="emoji">🌿</span><div class="vi" data-vi="Cây Me" data-en="Tamarind">Cây Me</div><div class="en">Tamarindus indica</div></div>
+    <div class="plant-chip"><span class="emoji">🍈</span><div class="vi" data-vi="Mít" data-en="Jackfruit">Mít</div><div class="en">Artocarpus heterophyllus</div></div>
+    <div class="plant-chip"><span class="emoji">🌼</span><div class="vi" data-vi="Cúc" data-en="Chrysanthemum">Cúc</div><div class="en">Chrysanthemum</div></div>
+    <div class="plant-chip"><span class="emoji">🌱</span><div class="vi" data-vi="Dương Xỉ" data-en="Fern">Dương Xỉ</div><div class="en">Pteridophyta</div></div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section style="background: var(--surface1); padding: 80px 0;">
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <div class="section-label">
+      <div class="section-tag" data-vi="CÔNG NGHỆ" data-en="TECHNOLOGY">CÔNG NGHỆ</div>
+      <h2 class="section-h2" data-vi="Xây dựng trên nền tảng tốt nhất" data-en="Built on the best foundations">Xây dựng trên nền tảng tốt nhất</h2>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <span class="tech-icon">🌐</span>
+        <div>
+          <h4>PlantNet API</h4>
+          <p data-vi="API nhận diện thực vật của CIRAD & Inria, Pháp. Dữ liệu từ hàng triệu mẫu cây trên toàn cầu." data-en="Plant identification API from CIRAD & Inria, France. Trained on millions of plant specimens worldwide.">API nhận diện thực vật của CIRAD & Inria, Pháp. Dữ liệu từ hàng triệu mẫu cây trên toàn cầu.</p>
+        </div>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">🧠</span>
+        <div>
+          <h4>Apple Foundation Models</h4>
+          <p data-vi="LLM chạy trực tiếp trên máy (iOS 26+). Riêng tư tuyệt đối — dữ liệu không bao giờ rời khỏi thiết bị." data-en="LLM running directly on device (iOS 26+). Completely private — data never leaves your device.">LLM chạy trực tiếp trên máy (iOS 26+). Riêng tư tuyệt đối — dữ liệu không bao giờ rời khỏi thiết bị.</p>
+        </div>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">👁️</span>
+        <div>
+          <h4>Apple Vision Framework</h4>
+          <p data-vi="Nhận diện offline dự phòng khi không có kết nối internet. Xử lý tức thì ngay trên chip Neural Engine." data-en="Offline fallback identification when no internet connection. Instant processing on the Neural Engine chip.">Nhận diện offline dự phòng khi không có kết nối internet. Xử lý tức thì ngay trên chip Neural Engine.</p>
+        </div>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">🔒</span>
+        <div>
+          <h4 data-vi="CoreData + CloudKit" data-en="CoreData + CloudKit">CoreData + CloudKit</h4>
+          <p data-vi="Dữ liệu vườn cây lưu an toàn trên máy với CoreData. Không cần tài khoản, không thu thập dữ liệu cá nhân." data-en="Garden data stored safely on device with CoreData. No account needed, no personal data collected.">Dữ liệu vườn cây lưu an toàn trên máy với CoreData. Không cần tài khoản, không thu thập dữ liệu cá nhân.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section class="cta-strip" id="download">
+  <h2 data-vi="Tải PlantID Pro ngay hôm nay" data-en="Download PlantID Pro today">Tải PlantID Pro ngay hôm nay</h2>
+  <p data-vi="Miễn phí 5 lần nhận diện/tháng. Nâng cấp Pro để nhận diện không giới hạn." data-en="Free with 5 identifications/month. Upgrade to Pro for unlimited identifications.">Miễn phí 5 lần nhận diện/tháng. Nâng cấp Pro để nhận diện không giới hạn.</p>
+  <a href="https://apps.apple.com" class="btn-primary" style="font-size:16px;padding:16px 36px">
+    <span>🍎</span>
+    <span data-vi="Tải trên App Store" data-en="Download on App Store">Tải trên App Store</span>
+  </a>
+  <div class="cta-note" data-vi="Yêu cầu iOS 16.0 trở lên • iPhone & iPad" data-en="Requires iOS 16.0 or later • iPhone & iPad">Yêu cầu iOS 16.0 trở lên • iPhone & iPad</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:18px">🌿</span>
+      <span style="font-size:14px;font-weight:600;color:rgba(255,255,255,.7)">PlantID Pro</span>
+    </div>
+    <div class="footer-links">
+      <a href="privacy.html" data-vi="Chính sách bảo mật" data-en="Privacy Policy">Chính sách bảo mật</a>
+      <a href="terms.html" data-vi="Điều khoản sử dụng" data-en="Terms of Use">Điều khoản sử dụng</a>
+      <a href="mailto:support@plantidpro.app">support@plantidpro.app</a>
+    </div>
+    <div class="footer-copy" data-vi="© 2025 PlantID Pro. All rights reserved." data-en="© 2025 PlantID Pro. All rights reserved.">© 2025 PlantID Pro. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  let lang = 'vi';
+  function toggleLang() {
+    lang = lang === 'vi' ? 'en' : 'vi';
+    document.querySelector('.lang-toggle').textContent = lang === 'vi' ? 'EN' : 'VI';
+    document.querySelectorAll('[data-vi]').forEach(el => {
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+  }
+</script>
+</body>
+</html>
