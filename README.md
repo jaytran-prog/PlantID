@@ -13,7 +13,7 @@ This repository contains two things:
 
 To use a custom domain (`plantidpro.app`):
 - Add a `CNAME` file containing `plantidpro.app`
-- Configure DNS at your registrar: CNAME `www` → `<username>.github.io`
+- Configure DNS at your registrar: CNAME `www` → `jaytran-prog.github.io`
 
 ## Plant Knowledge Base (`data/plants.json`)
 
